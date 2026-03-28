@@ -49,7 +49,11 @@ function Get-Script {
     $dest   = "$TEMP_DIR\$ScriptName"
     try {
         Write-Host "  [↓] Downloading $ScriptName..." -ForegroundColor DarkCyan
-        Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
+        $webClient = New-Object System.Net.WebClient
+        $webClient.Encoding = [System.Text.Encoding]::UTF8
+        $scriptContent = $webClient.DownloadString($url)
+        [System.IO.File]::WriteAllText($dest, $scriptContent, [System.Text.Encoding]::UTF8)
+        $webClient.Dispose()
         Write-Log "Downloaded $ScriptName"
         return $dest
     } catch {

@@ -36,7 +36,11 @@ Write-Host "  ━━━━━━━━━━━━━━━━━━━━━━
 Write-Host ""
 try {
     $launchPath = "$TEMP_DIR\LAUNCH.ps1"
-    Invoke-WebRequest -Uri $LAUNCHER_URL -OutFile $launchPath -UseBasicParsing -ErrorAction Stop
+    $webClient = New-Object System.Net.WebClient
+    $webClient.Encoding = [System.Text.Encoding]::UTF8
+    $scriptContent = $webClient.DownloadString($LAUNCHER_URL)
+    [System.IO.File]::WriteAllText($launchPath, $scriptContent, [System.Text.Encoding]::UTF8)
+    $webClient.Dispose()
     Write-Host "  [+] Launcher downloaded successfully." -ForegroundColor Green
     & $launchPath
 } catch {
