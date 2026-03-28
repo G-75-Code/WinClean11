@@ -21,21 +21,20 @@ if ($policy -eq "Restricted") {
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
 }
 
-# ── Configuration ──────────────────────────────────────────────────────────
+# Configuration
 $LAUNCHER_URL = "https://raw.githubusercontent.com/G-75-Code/WinClean11/main/scripts/LAUNCH.ps1"
 $TEMP_DIR     = "$env:TEMP\WinClean"
 
 # Create temp dir
 if (-not (Test-Path $TEMP_DIR)) { New-Item -ItemType Directory -Path $TEMP_DIR -Force | Out-Null }
 
-# Download & run LAUNCH.ps1
+# Download and run LAUNCH.ps1
 Write-Host ""
-Write-Host "  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
-Write-Host "         WinClean 11 — Downloading...               " -ForegroundColor White
-Write-Host "  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host "  ================================================" -ForegroundColor Cyan
+Write-Host "         WinClean 11 - Downloading...              " -ForegroundColor White
+Write-Host "  ================================================" -ForegroundColor Cyan
 Write-Host ""
 try {
-    $launchPath = "$TEMP_DIR\LAUNCH.ps1"
     $webClient = New-Object System.Net.WebClient
     $webClient.Encoding = [System.Text.Encoding]::UTF8
     $scriptContent = $webClient.DownloadString($LAUNCHER_URL)
