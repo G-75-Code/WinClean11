@@ -39,10 +39,9 @@ try {
     $webClient = New-Object System.Net.WebClient
     $webClient.Encoding = [System.Text.Encoding]::UTF8
     $scriptContent = $webClient.DownloadString($LAUNCHER_URL)
-    [System.IO.File]::WriteAllText($launchPath, $scriptContent, [System.Text.Encoding]::UTF8)
     $webClient.Dispose()
     Write-Host "  [+] Launcher downloaded successfully." -ForegroundColor Green
-    & $launchPath
+    Invoke-Expression $scriptContent
 } catch {
     Write-Host "  [!] Download failed: $_" -ForegroundColor Red
     Write-Host "  Check your internet connection or the script URL." -ForegroundColor DarkYellow

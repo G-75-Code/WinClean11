@@ -3,7 +3,7 @@
 #  Run this as Administrator in PowerShell via bootstrap.ps1
 # ============================================================
 
-#Requires -RunAsAdministrator
+# Admin check is handled by bootstrap.ps1
 
 $Host.UI.RawUI.WindowTitle = "WinClean 11"
 $Host.UI.RawUI.BackgroundColor = "Black"
@@ -45,17 +45,15 @@ function Show-Banner {
 # ── Download sub-scripts from GitHub ──────────────────────────
 function Get-Script {
     param([string]$ScriptName)
-    $url    = "$GITHUB_BASE/$ScriptName"
-    $dest   = "$TEMP_DIR\$ScriptName"
+    $url = "$GITHUB_BASE/$ScriptName"
     try {
         Write-Host "  [↓] Downloading $ScriptName..." -ForegroundColor DarkCyan
         $webClient = New-Object System.Net.WebClient
         $webClient.Encoding = [System.Text.Encoding]::UTF8
         $scriptContent = $webClient.DownloadString($url)
-        [System.IO.File]::WriteAllText($dest, $scriptContent, [System.Text.Encoding]::UTF8)
         $webClient.Dispose()
         Write-Log "Downloaded $ScriptName"
-        return $dest
+        return $scriptContent
     } catch {
         Write-Host "  [!] Failed to download $ScriptName : $_" -ForegroundColor Red
         Write-Log "FAILED downloading $ScriptName : $_" "ERROR"
@@ -102,12 +100,12 @@ function Show-MainMenu {
 # ── Run sub-script ─────────────────────────────────────────────
 function Invoke-Module {
     param([string]$ScriptFile)
-    $path = Get-Script $ScriptFile
-    if ($path -and (Test-Path $path)) {
+    $scriptContent = Get-Script $ScriptFile
+    if ($scriptContent) {
         Write-Host ""
         Write-Host "  [▶] Running $ScriptFile ..." -ForegroundColor Green
         Write-Host ""
-        & $path
+        Invoke-Expression $scriptContent
     } else {
         Write-Host "  [!] Could not run $ScriptFile" -ForegroundColor Red
     }
